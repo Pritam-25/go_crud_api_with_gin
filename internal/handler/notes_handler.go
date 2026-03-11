@@ -23,7 +23,7 @@ func (h *NotesHandler) GetNotes(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
-			"error": "failed to fetch notes",
+			"error":   "failed to fetch notes",
 		})
 		return
 	}

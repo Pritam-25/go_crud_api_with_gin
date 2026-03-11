@@ -12,7 +12,6 @@ import (
 )
 
 func ConnectMongoDB(cfg *config.Config) (*mongo.Client, *mongo.Database, error) {
-
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -33,7 +32,6 @@ func ConnectMongoDB(cfg *config.Config) (*mongo.Client, *mongo.Database, error) 
 }
 
 func DisconnectMongoDB(client *mongo.Client) error {
-
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 

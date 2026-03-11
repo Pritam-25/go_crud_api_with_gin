@@ -14,7 +14,6 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
-
 	// load .env file (ignore error in production)
 	_ = godotenv.Load()
 

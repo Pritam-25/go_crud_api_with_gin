@@ -10,7 +10,6 @@ import (
 )
 
 func NewRouter(db *mongo.Database) *gin.Engine {
-
 	router := gin.Default()
 
 	router.GET("/", func(c *gin.Context) {
