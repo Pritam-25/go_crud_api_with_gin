@@ -9,10 +9,7 @@ import (
 )
 
 func NewRouter(noteHandler *handler.NotesHandler) *gin.Engine {
-	router := gin.New()
-
-	router.Use(gin.Recovery())
-	router.Use(middleware.RequestLogger())
+	router := gin.Default()
 	router.Use(middleware.CORSMiddleware())
 	router.Use(middleware.TimeoutMiddleware(5 * time.Second))
 
