@@ -4,22 +4,22 @@ import (
 	"net/http"
 
 	"github.com/Pritam-25/go_crud_api_with_gin/internal/models"
-	"github.com/Pritam-25/go_crud_api_with_gin/internal/repository"
+	"github.com/Pritam-25/go_crud_api_with_gin/internal/service"
 	"github.com/gin-gonic/gin"
 )
 
 type NotesHandler struct {
-	repo *repository.NoteRepository
+	svc *service.NoteService
 }
 
-func NewNotesHandler(repo *repository.NoteRepository) *NotesHandler {
+func NewNotesHandler(svc *service.NoteService) *NotesHandler {
 	return &NotesHandler{
-		repo: repo,
+		svc: svc,
 	}
 }
 
 func (h *NotesHandler) GetNotes(c *gin.Context) {
-	notes, err := h.repo.GetAllNotes(c.Request.Context())
+	notes, err := h.svc.GetNotes(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -45,7 +45,7 @@ func (h *NotesHandler) CreateNote(c *gin.Context) {
 		return
 	}
 
-	note, err := h.repo.CreateNote(c.Request.Context(), req)
+	note, err := h.svc.CreateNote(c.Request.Context(), req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,

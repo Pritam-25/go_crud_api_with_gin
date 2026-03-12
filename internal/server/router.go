@@ -1,35 +1,25 @@
 package server
 
 import (
-	"net/http"
+	"time"
 
 	"github.com/Pritam-25/go_crud_api_with_gin/internal/handler"
-	"github.com/Pritam-25/go_crud_api_with_gin/internal/repository"
+	"github.com/Pritam-25/go_crud_api_with_gin/internal/middleware"
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
-func NewRouter(db *mongo.Database) *gin.Engine {
-	router := gin.Default()
+func NewRouter(noteHandler *handler.NotesHandler) *gin.Engine {
+	router := gin.New()
 
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"success": true,
-			"message": "Welcome to Go CRUD API",
-		})
-	})
+	router.Use(gin.Recovery())
+	router.Use(middleware.RequestLogger())
+	router.Use(middleware.CORSMiddleware())
+	router.Use(middleware.TimeoutMiddleware(5 * time.Second))
 
-	router.GET("/health", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"status": "ok",
-		})
-	})
+	RegisterHealthRoutes(router)
 
-	notRepo := repository.NewNoteRepository(db)
-	noteHandler := handler.NewNotesHandler(notRepo)
-
-	router.GET("/notes", noteHandler.GetNotes)
-	router.POST("/notes", noteHandler.CreateNote)
+	api := router.Group("/api/v1")
+	RegisterNoteRoutes(api, noteHandler)
 
 	return router
 }
