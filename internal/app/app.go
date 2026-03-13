@@ -21,7 +21,12 @@ func BuildServer(cfg *config.Config) (*gin.Engine, func(), error) {
 	noteService := service.NewNoteService(noteRepo)
 	noteHandler := handler.NewNotesHandler(noteService)
 
-	router := server.NewRouter(noteHandler)
+	userRepo := repository.NewUserRepository(database)
+	userService := service.NewUserService(userRepo)
+	authHandler := handler.NewAuthHandler(userService)
+	userHandler := handler.NewUserHandler(userService)
+
+	router := server.NewRouter(noteHandler, authHandler, userHandler)
 
 	cleanup := func() {
 		db.DisconnectMongoDB(client)

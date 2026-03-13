@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/Pritam-25/go_crud_api_with_gin/internal/dto"
@@ -9,17 +10,17 @@ import (
 )
 
 type NotesHandler struct {
-	svc *service.NoteService
+	service *service.NoteService
 }
 
-func NewNotesHandler(svc *service.NoteService) *NotesHandler {
+func NewNotesHandler(service *service.NoteService) *NotesHandler {
 	return &NotesHandler{
-		svc: svc,
+		service: service,
 	}
 }
 
 func (h *NotesHandler) GetNotes(c *gin.Context) {
-	notes, err := h.svc.GetNotes(c.Request.Context())
+	notes, err := h.service.GetNotes(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -38,15 +39,17 @@ func (h *NotesHandler) CreateNote(c *gin.Context) {
 	var req dto.CreateNoteRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Printf("Error binding JSON: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
-			"error":   "invalid request body",
+			"error":   "invalid request body", // err.Error() can be used for more detailed error messages
 		})
 		return
 	}
 
-	note, err := h.svc.CreateNote(c.Request.Context(), req)
+	note, err := h.service.CreateNote(c.Request.Context(), req)
 	if err != nil {
+		log.Printf("Error creating note: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
 			"error":   "failed to create note",

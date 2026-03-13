@@ -15,10 +15,3 @@ type User struct {
 	CreatedAt time.Time     `json:"created_at" bson:"created_at"`
 	UpdatedAt time.Time     `json:"updated_at" bson:"updated_at"`
 }
-
-type CreateUserRequest struct {
-	Username string `json:"username" binding:"required,min=3,max=100"`
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=6,max=100"`
-	Role      string `json:"role" binding:"required"`
-}

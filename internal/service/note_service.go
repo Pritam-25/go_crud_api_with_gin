@@ -19,9 +19,20 @@ func NewNoteService(repo *repository.NoteRepository) *NoteService {
 }
 
 func (s *NoteService) GetNotes(ctx context.Context) ([]models.Note, error) {
-	return s.repo.GetAllNotes(ctx)
+	return s.repo.GetAll(ctx)
 }
 
 func (s *NoteService) CreateNote(ctx context.Context, req dto.CreateNoteRequest) (*models.Note, error) {
-	return s.repo.CreateNote(ctx, req)
+	note := &models.Note{
+		Title:   req.Title,
+		Content: req.Content,
+		Pinned:  req.Pinned,
+	}
+
+	err := s.repo.Create(ctx, note)
+	if err != nil {
+		return nil, err
+	}
+
+	return note, nil
 }

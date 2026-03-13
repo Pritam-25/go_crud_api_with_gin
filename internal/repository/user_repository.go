@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/Pritam-25/go_crud_api_with_gin/internal/models"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -18,11 +20,36 @@ func NewUserRepository(db *mongo.Database) *UserRepository {
 	}
 }
 
-func (r *UserRepository) findUserByEmail(ctx context.Context, email string) (models.User, error) {
+func (r *UserRepository) FindByEmail(ctx context.Context, email string) (models.User, error) {
 	var user models.User
-	err := r.collection.FindOne(ctx, bson.M{"email": email}).Decode(&user)
+
+	filter := bson.M{"email": email}
+
+	err := r.collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
-		return models.User{}, err
+		return models.User{}, fmt.Errorf("repository: find user by email: %w", err)
 	}
+
 	return user, nil
+}
+
+func (r *UserRepository) Create(ctx context.Context, user *models.User) error {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
+	defer cancel()
+
+	now := time.Now().UTC()
+	user.CreatedAt = now
+	user.UpdatedAt = now
+
+	result, err := r.collection.InsertOne(ctx, user)
+	if err != nil {
+		return fmt.Errorf("repository: insert user: %w", err)
+	}
+
+	if id, ok := result.InsertedID.(bson.ObjectID); ok {
+		user.ID = id
+		return nil
+	}
+
+	return fmt.Errorf("repository: failed to parse inserted id")
 }
