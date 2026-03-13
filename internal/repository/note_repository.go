@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/Pritam-25/go_crud_api_with_gin/internal/dto"
 	"github.com/Pritam-25/go_crud_api_with_gin/internal/models"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -37,7 +38,7 @@ func (r *NoteRepository) GetAllNotes(ctx context.Context) ([]models.Note, error)
 	return notes, nil
 }
 
-func (r *NoteRepository) CreateNote(ctx context.Context, req models.CreateNoteRequest) (*models.Note, error) {
+func (r *NoteRepository) CreateNote(ctx context.Context, req dto.CreateNoteRequest) (*models.Note, error) {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 

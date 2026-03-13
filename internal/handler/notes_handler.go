@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/Pritam-25/go_crud_api_with_gin/internal/models"
+	"github.com/Pritam-25/go_crud_api_with_gin/internal/dto"
 	"github.com/Pritam-25/go_crud_api_with_gin/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -35,7 +35,7 @@ func (h *NotesHandler) GetNotes(c *gin.Context) {
 }
 
 func (h *NotesHandler) CreateNote(c *gin.Context) {
-	var req models.CreateNoteRequest
+	var req dto.CreateNoteRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
